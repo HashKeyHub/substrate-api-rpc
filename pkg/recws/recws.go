@@ -392,18 +392,20 @@ func (rc *RecConn) connect() {
 
 		if err == nil {
 			if !rc.getNonVerbose() {
+				log.Printf("Dial: connection was successfully established with %s\n", rc.url)
+			}
 
-				if !rc.hasSubscribeHandler() {
-					return
-				}
-
+			if rc.hasSubscribeHandler() {
 				if err := rc.SubscribeHandler(); err != nil {
 					log.Fatalf("Dial: connect handler failed with %s", err.Error())
 				}
-
-				if rc.getKeepAliveTimeout() != 0 {
-					rc.keepAlive()
+				if !rc.getNonVerbose() {
+					log.Printf("Dial: connect handler was successfully established with %s\n", rc.url)
 				}
+			}
+
+			if rc.getKeepAliveTimeout() != 0 {
+				rc.keepAlive()
 			}
 
 			return
